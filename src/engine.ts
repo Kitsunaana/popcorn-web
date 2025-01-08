@@ -16,6 +16,9 @@ const Brick_Width = 15
 const Brick_Height = 7
 const Cell_Width = 16
 const Cell_Height = 8
+const Circle_Size = 7
+
+const Platforma_Inner_Width = 21;
 
 const get_brick_letter_color = (is_switch_color: boolean) => {
   if (is_switch_color) {
@@ -175,9 +178,88 @@ const draw_brick_letter = ({ context, ...other }: Draw_Brick_Letter_Props) => {
   }
 };
 
+export const draw_platforma = (context: CanvasRenderingContext2D, x: number, y: number) => {
+  context.strokeStyle = "rgb(151, 0, 0)"
+  context.fillStyle = "rgb(151, 0, 0)"
+
+  const circle_radius = Circle_Size / 2
+
+  context.beginPath()
+  context.ellipse(
+    (x + circle_radius) * Global_Scale,
+    (y + circle_radius) * Global_Scale,
+    circle_radius * Global_Scale,
+    circle_radius * Global_Scale,
+    0,
+    0,
+    2 * Math.PI
+  )
+  context.fill()
+  context.stroke()
+
+  context.beginPath()
+  context.ellipse(
+    (x + circle_radius + Platforma_Inner_Width) * Global_Scale,
+    (y + circle_radius) * Global_Scale,
+    circle_radius * Global_Scale,
+    circle_radius * Global_Scale,
+    0,
+    0,
+    2 * Math.PI
+  )
+  context.fill()
+  context.stroke()
+
+  context.strokeStyle = "rgb(255, 255, 255)"
+  context.beginPath()
+  context.arc(
+    (x + circle_radius) * Global_Scale,
+    (y + circle_radius) * Global_Scale,
+    (circle_radius - 1) * Global_Scale,
+    Math.PI,
+    1.4 * Math.PI,
+    false
+  )
+  context.stroke()
+
+  context.strokeStyle = "rgb(0, 128, 192)"
+  context.fillStyle = "rgb(0, 128, 192)"
+
+  context.beginPath();
+  context.roundRect(
+    (x + 4) * Global_Scale,
+    (y + 1) * Global_Scale,
+    (Platforma_Inner_Width - 1) * Global_Scale,
+    5 * Global_Scale,
+    3 * Global_Scale
+  )
+  context.closePath();
+
+  context.fill();
+  context.stroke();
+
+  // Блики на внутренней части платформы
+  context.strokeStyle = "rgb(255, 255, 255)"
+  context.lineWidth = 1
+  context.beginPath()
+
+  context.moveTo((x + 6) * Global_Scale, (y + 2) * Global_Scale)
+  context.lineTo((x + 6 + 4) * Global_Scale, (y + 2) * Global_Scale)
+
+  context.moveTo((x + 11) * Global_Scale, (y + 2) * Global_Scale)
+  context.lineTo((x + 11 + 3) * Global_Scale, (y + 2) * Global_Scale)
+
+  context.moveTo((x + 15) * Global_Scale, (y + 2) * Global_Scale)
+  context.lineTo((x + 15 + 1) * Global_Scale, (y + 2) * Global_Scale)
+
+  context.stroke()
+}
+
 export const draw_frame = (context: CanvasRenderingContext2D) => {
 
-  let i = 0;
+  draw_platforma(context, 50, 150)
+
+  /* let i = 0;
   for (i = 0; i < number_all_revolutions; i++) {
     draw_brick_letter({
       context,
@@ -196,5 +278,5 @@ export const draw_frame = (context: CanvasRenderingContext2D) => {
       letter_type: Letter_Type.O,
       rotation_step: i
     })
-  }
+  } */
 }
