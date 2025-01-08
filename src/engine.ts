@@ -17,8 +17,27 @@ const Brick_Height = 7
 const Cell_Width = 16
 const Cell_Height = 8
 const Circle_Size = 7
+const Level_X_Offset = 8
+const Level_Y_Offset = 6
 
 const Platforma_Inner_Width = 21;
+
+const Level_01 = [
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  [2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+]
 
 const get_brick_letter_color = (is_switch_color: boolean) => {
   if (is_switch_color) {
@@ -94,6 +113,50 @@ const get_is_switch_color = (all_frames: number[], rotation_step: number, brick_
   return is_frame_back_side_block(all_frames, rotation_step)
     ? brick_type === Brick_Type.Blue
     : brick_type !== Brick_Type.Blue
+}
+
+const draw_brick = (context: CanvasRenderingContext2D, x: number, y: number, brick_type: Brick_Type) => {
+  if (brick_type === Brick_Type.None) return
+
+  const brick_colors = {
+    [Brick_Type.Red]: {
+      pen: "rgb(255, 85, 85)",
+      brush: "rgb(255, 85, 85)"
+    },
+    [Brick_Type.Blue]: {
+      pen: "rgb(68, 239, 255)",
+      brush: "rgb(68, 239, 255)"
+    },
+  }
+
+  context.strokeStyle = brick_colors[brick_type].pen
+  context.fillStyle = brick_colors[brick_type].brush
+
+  context.beginPath();
+  context.roundRect(
+    x * Global_Scale,
+    y * Global_Scale,
+    (Brick_Width) * Global_Scale,
+    (Brick_Height) * Global_Scale,
+    2 * Global_Scale,
+  )
+  context.fill();
+  context.stroke();
+}
+
+const draw_level = (context: CanvasRenderingContext2D) => {
+  let i, j
+
+  for (i = 0; i < 14; i++) {
+    for (j = 0; j < 12; j++) {
+      draw_brick(
+        context,
+        Level_X_Offset + j * Cell_Width,
+        Level_Y_Offset + i * Cell_Height,
+        Level_01[i][j]
+      )
+    }
+  }
 }
 
 const draw_brick_letter = ({ context, ...other }: Draw_Brick_Letter_Props) => {
@@ -178,7 +241,7 @@ const draw_brick_letter = ({ context, ...other }: Draw_Brick_Letter_Props) => {
   }
 };
 
-export const draw_platforma = (context: CanvasRenderingContext2D, x: number, y: number) => {
+const draw_platforma = (context: CanvasRenderingContext2D, x: number, y: number) => {
   context.strokeStyle = "rgb(151, 0, 0)"
   context.fillStyle = "rgb(151, 0, 0)"
 
@@ -256,10 +319,10 @@ export const draw_platforma = (context: CanvasRenderingContext2D, x: number, y: 
 }
 
 export const draw_frame = (context: CanvasRenderingContext2D) => {
-
+  // draw_level(context)
   draw_platforma(context, 50, 150)
 
-  /* let i = 0;
+  let i = 0;
   for (i = 0; i < number_all_revolutions; i++) {
     draw_brick_letter({
       context,
@@ -278,5 +341,5 @@ export const draw_frame = (context: CanvasRenderingContext2D) => {
       letter_type: Letter_Type.O,
       rotation_step: i
     })
-  } */
+  }
 }
